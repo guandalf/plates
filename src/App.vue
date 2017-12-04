@@ -18,48 +18,13 @@
       </q-toolbar-title>
     </q-toolbar>
 
-    <div slot="left">
-      <!--
-        Use <q-side-link> component
-        instead of <q-item> for
-        internal vue-router navigation
-      -->
-      <q-list no-border link inset-delimiter>
-        <q-list-header>Menu</q-list-header>
-        <form id="form" v-on:submit.prevent="addRating">
-          <q-field label="Enter a plate">
-            <q-input v-model="newRating.platenum" align="center" float-label="Plate number" placeholder="DV968GV" />
-          </q-field>
-          <q-field label="Rate this plate">
-            <q-rating v-model="newRating.platerating" align="center" :max="5" />
-          </q-field>
-          <q-field label="Comment">
-            <!-- Multiple Line Input -->
-            <q-input
-              v-model="newRating.platecomment"
-              type="textarea"
-              float-label="You can comment your exeprience here"
-              :max-height="100"
-              :min-rows="3"
-            />
-          </q-field>
-          <q-field>
-            <q-btn icon="create" align="center">Submit</q-btn>
-          </q-field>
-        </form>
-        <q-item>
-          <q-item-side icon="info" />
-          <q-item-main label="About" sublabel="What about us" />
-        </q-item>
-      </q-list>
-    </div>
-
+    <left-menu slot="left" />
     <!--
       Replace following <div> with
       <router-view /> component
       if using subRoutes
     -->
-    <ratings-list/>
+    <router-view/>
   </q-layout>
 </template>
 
@@ -80,8 +45,8 @@ import {
   QRating,
   QField
 } from 'quasar'
-import { db } from './firebase'
 import RatingsList from './components/RatingsList.vue'
+import LeftMenu from 'components/LeftMenu.vue'
 
 export default {
   name: 'index',
@@ -100,27 +65,11 @@ export default {
     QInput,
     QRating,
     QField,
-    RatingsList
+    RatingsList,
+    LeftMenu
   },
   data () {
-    return {
-      newRating: {
-        platenum: '',
-        platerating: 0,
-        platecomment: ''
-      }
-    }
-  },
-  firebase: {
-    items: db.ref('scorching-heat-9667')
-  },
-  methods: {
-    addRating () {
-      this.$firebaseRefs.items.push(this.newRating)
-      this.newRating.platenum = ''
-      this.newRating.platerate = 0
-      this.newRating.platecomment = ''
-    }
+    return {}
   }
 }
 </script>
