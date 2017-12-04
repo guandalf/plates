@@ -14,7 +14,7 @@
 
       <q-toolbar-title>
         Tell to a plate
-        <div slot="subtitle">Running on Quasar v{{$q.version}}</div>
+        <div slot="subtitle">A place where to tell what you think to a plate</div>
       </q-toolbar-title>
     </q-toolbar>
 
@@ -24,7 +24,6 @@
         instead of <q-item> for
         internal vue-router navigation
       -->
-
       <q-list no-border link inset-delimiter>
         <q-list-header>Menu</q-list-header>
         <form id="form" v-on:submit.prevent="addRating">
@@ -96,21 +95,7 @@ import {
   QRating,
   QField
 } from 'quasar'
-
-import firebase from 'firebase'
-
-// Initialize Firebase
-var config = {
-  apiKey: 'AIzaSyBxV5fi2avHNNfqooVzCdafwzUoJsPFF0Q',
-  authDomain: 'scorching-heat-9667.firebaseapp.com',
-  databaseURL: 'https://scorching-heat-9667.firebaseio.com',
-  projectId: 'scorching-heat-9667',
-  storageBucket: 'scorching-heat-9667.appspot.com',
-  messagingSenderId: '629992007676'
-}
-
-var firebaseApp = firebase.initializeApp(config)
-var db = firebaseApp.database()
+import { db } from '../firebase'
 
 const
   { viewport } = dom,
