@@ -4,43 +4,61 @@
     instead of <q-item> for
     internal vue-router navigation
   -->
-  <q-list no-border link inset-delimiter>
-    <q-list-header>Menu</q-list-header>
-    <form id="form" v-on:submit.prevent="addRating">
-      <q-field label="Enter a plate">
-        <q-input v-model="newRating.platenum" placeholder="Start typing a plate">
-          <q-autocomplete
-            @search="search"
-            :debounce="1000"
-            @selected="selected" />
-        </q-input>
-      </q-field>
-      <q-field label="Rate this plate">
-        <q-rating v-model="newRating.platerating" align="center" :max="5" />
-      </q-field>
-      <q-field label="Comment">
-        <!-- Multiple Line Input -->
-        <q-input
-          v-model="newRating.platecomment"
-          type="textarea"
-          float-label="You can comment your exeprience here"
-          :max-height="100"
-          :min-rows="3"
-        />
-      </q-field>
-      <q-field>
-        <q-btn icon="create" align="center">Submit</q-btn>
-      </q-field>
-    </form>
-    <q-item>
-      <q-item-side icon="info" />
-      <q-item-main label="About" sublabel="What about us" />
-    </q-item>
-  </q-list>
+  <q-layout>
+    <q-list>
+      <form id="form" v-on:submit.prevent="addRating">
+      <q-item>
+        <q-item-main>
+          <q-field label="Enter a plate">
+            <q-input v-model="newRating.platenum" placeholder="Start typing a plate">
+              <q-autocomplete
+                :debounce="1000"
+                :filter="myFilter"
+                @selected="selected" />
+            </q-input>
+          </q-field>
+        </q-item-main>
+      </q-item>
+      <q-item>
+        <q-item-main>
+          <q-field label="Rate this plate">
+            <q-rating v-model="newRating.platerating" align="center" :max="5" />
+          </q-field>
+        </q-item-main>
+      </q-item>
+      <q-item>
+        <q-item-main>
+          <q-field label="Comment">
+            <!-- Multiple Line Input -->
+            <q-input
+              v-model="newRating.platecomment"
+              type="textarea"
+              float-label="Enter your comments"
+              :max-height="100"
+              :min-rows="3"
+            />
+          </q-field>
+        </q-item-main>
+      </q-item>
+      <q-item>
+        <q-item-main>
+          <q-field>
+            <q-btn icon="create" align="center">Submit</q-btn>
+          </q-field>
+        </q-item-main>
+      </q-item>
+      </form>
+      <q-item>
+        <q-item-side icon="info" />
+        <q-item-main label="About" sublabel="What about us" />
+      </q-item>
+    </q-list>
+  </q-layout>
 </template>
 
 <script>
 import {
+  QLayout,
   QBtn,
   QIcon,
   QList,
@@ -53,14 +71,15 @@ import {
   QRating,
   QField,
   Toast,
-  filter,
   QAutocomplete
 } from 'quasar'
-import { db } from '../firebase'
+import fuzzysearch from 'fuzzysearch'
+import { db } from '../fbaselib'
 
 export default {
   name: 'left-menu',
   components: {
+    QLayout,
     QBtn,
     QIcon,
     QList,
@@ -95,15 +114,14 @@ export default {
       this.newRating.platerate = 0
       this.newRating.platecomment = ''
     },
-    search (terms, done) {
-      this.$bindAsArray('r', this.$firebaseRefs.items)
-      console.log(filter(terms, {field: 'platenum', list: this.r}))
-      done(filter(terms, {field: 'platenum', list: this.r}))
-    },
     selected (item) {
       console.log('got it')
       console.log(item)
       Toast.create(`Selected suggestion "${item.platenum}"`)
+    },
+    myFilter (terms, { field, list }) {
+      const token = terms.toLowerCase()
+      return list.filter(item => fuzzysearch(token, item[field].toLowerCase()))
     }
   }
 }

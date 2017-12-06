@@ -26,7 +26,7 @@ import {
   QRating,
   QField
 } from 'quasar'
-import { db } from '../firebase'
+import { db } from '../fbaselib'
 
 export default {
   name: 'ratings-list',
